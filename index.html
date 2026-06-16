@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>115年在職時數時數計算器-僅適用於臺北市</title>
+    <title>114~115年在職時數時數計算器-僅用於臺北市</title>
     <style>
         body {
             font-family: "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
+            background-color: #f1f5f9;
+            color: #334155;
             margin: 0;
-            padding: 20px;
+            padding: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,162 +18,301 @@
         }
         .container {
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 600px;
+            max-width: 900px; /* 超寬主容器，讓長文字舒展不擁擠 */
         }
         h2 {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 25px;
+            color: #0f172a;
+            margin-bottom: 10px;
             font-size: 24px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
         }
-        h3 {
-            color: #2980b9;
-            margin-top: 30px;
-            margin-bottom: 15px;
+        .subtitle-main {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        .section-title {
             font-size: 18px;
-            border-left: 4px solid #2980b9;
+            color: #1e3a8a;
+            border-left: 5px solid #2563eb;
             padding-left: 10px;
+            margin: 35px 0 20px 0;
+            font-weight: bold;
         }
         .form-group {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 12px;
         }
+        /* 左側文字標籤：分配最大空間，維持寬裕感 */
         .form-group label {
-            flex: 0 0 250px;
-            font-weight: bold;
-            color: #34495e;
-            font-size: 15px;
-        }
-        .form-group input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
+            font-weight: 600;
+            color: #475569;
             font-size: 15px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
+            padding-right: 30px;
+            line-height: 1.6;
         }
-        .form-group input:focus {
-            border-color: #3498db;
+        /* 右側運算格子：縮短寬度，固定為 220px，視覺焦點更集中 */
+        .input-block {
+            display: flex;
+            align-items: center;
+            flex: 0 0 220px; 
+            justify-content: flex-end;
+            gap: 4px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            text-align: center;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #2563eb;
             outline: none;
         }
         .form-group input[readonly] {
-            background-color: #eef2f5;
-            color: #7f8c8d;
-            border: 1px solid #dcdde1;
+            background-color: #f8fafc;
+            color: #334155;
+            border: 1px solid #e2e8f0;
             cursor: not-allowed;
+            font-weight: 600;
         }
         .user-input {
-            background-color: #fffde7; /* 黃色背景提醒此欄位可手動輸入 */
-            border: 1px solid #f1c40f !important;
+            background-color: #fefce8; /* 淡黃底色提示手動輸入與選擇區 */
+            border: 1px solid #eab308 !important;
         }
+        /* 年月日格子的精簡寬度 */
+        .year-input { width: 65px !important; }
+        .date-select { width: 55px !important; }
+        
         .unit {
-            margin-left: 10px;
-            color: #7f8c8d;
-            width: 50px;
+            margin-left: 6px;
+            color: #64748b;
+            min-width: 45px;
             font-size: 14px;
+            text-align: left;
+        }
+        .dynamic-highlight {
+            color: #2563eb;
+            font-weight: bold;
+            background-color: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        /* 注意事項區塊 */
+        .attention-box {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .attention-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.6;
         }
         .btn-container {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 35px;
         }
         .btn-clear {
-            background-color: #e74c3c;
+            background-color: #ef4444;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 28px;
             font-size: 15px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s;
         }
         .btn-clear:hover {
-            background-color: #c0392b;
+            background-color: #dc2626;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>115年在職時數時數計算器-僅適用於臺北市</h2>
+    <h2>114~115年在職時數時數計算器-僅用於臺北市</h2>
+    <div class="subtitle-main">（僅適用於116年屆期換證者）</div>
     
     <div class="form-group">
-        <label for="name">一：姓名</label>
-        <input type="text" id="name" placeholder="請輸入姓名">
-        <div class="unit"></div>
+        <label for="name">『姓名』：</label>
+        <div class="input-block">
+            <input type="text" id="name" class="user-input" placeholder="請輸入姓名" style="text-align: left;">
+            <div class="unit"></div>
+        </div>
     </div>
     
     <div class="form-group">
-        <label for="expiryDate">二：114年當年度證書到期日</label>
-        <input type="date" id="expiryDate" min="2025-01-01" max="2025-12-31" onchange="calculate()">
-        <div class="unit"></div>
+        <label>一、『登記證書到期日（登記證書底下的年月日）』：</label>
+        <div class="input-block">
+            <input type="number" id="docYear" class="user-input year-input" placeholder="民國" min="1" oninput="calculateAll()">
+            <span style="font-size:13px; color:#64748b;">年</span>
+            <select id="docMonth" class="user-input date-select" onchange="calculateAll()">
+                <option value="">--</option>
+                </select>
+            <span style="font-size:13px; color:#64748b;">月</span>
+            <select id="docDay" class="user-input date-select" onchange="calculateAll()">
+                <option value="">--</option>
+                </select>
+            <span style="font-size:13px; color:#64748b;">日</span>
+        </div>
     </div>
     
     <div class="form-group">
-        <label for="row3">三：114年後半段（證書生效日到114年12月）月份數</label>
-        <input type="text" id="row3" readonly placeholder="自動計算">
-        <div class="unit">個月</div>
+        <label for="row2">二、『114年在職年度到期日（等同登記證書底下的月日）』：</label>
+        <div class="input-block">
+            <input type="text" id="row2" readonly placeholder="系統自動對照">
+            <div class="unit"></div>
+        </div>
     </div>
     
     <div class="form-group">
-        <label for="row4">四：114年應完成時數</label>
-        <input type="text" id="row4" readonly placeholder="自動計算">
-        <div class="unit">小時</div>
+        <label for="row3">三、『114年後半段月份數』：</label>
+        <div class="input-block">
+            <input type="text" id="row3" readonly placeholder="自動計算">
+            <div class="unit">個月</div>
+        </div>
     </div>
     
     <div class="form-group">
-        <label for="row5">五：114年後半段（證書生效日到114/12/31）已經完成時數(採認上限18小時)</label>
-        <input type="number" id="row5" class="user-input" min="0" max="18" step="0.5" placeholder="自行輸入" oninput="calculate()">
-        <div class="unit">小時</div>
+        <label for="row4">四、『114年應完成時數』：</label>
+        <div class="input-block">
+            <input type="text" id="row4" readonly placeholder="自動計算">
+            <div class="unit">小時</div>
+        </div>
     </div>
     
     <div class="form-group">
-        <label for="row6">六：115年（1/1~12/31）需要完成的時數</label>
-        <input type="text" id="row6" readonly placeholder="自動計算" style="font-weight: bold; color: #c0392b;">
-        <div class="unit">小時</div>
+        <label id="label-row5">五、『114年（<span class="dynamic-highlight" id="dynamic-date">『二』的日期</span>至114/12/31）已完成時數(採認上限18小時)』：</label>
+        <div class="input-block">
+            <input type="number" id="row5" class="user-input" min="0" max="18" step="0.5" placeholder="自行輸入" oninput="calculateAll()">
+            <div class="unit">小時</div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="row6" style="color: #b91c1c;">六、『115年需要完成的時數』：</label>
+        <div class="input-block">
+            <input type="text" id="row6" readonly placeholder="自動計算" style="font-weight: bold; color: #b91c1c; background-color: #fef2f2;">
+            <div class="unit" style="color: #b91c1c; font-weight: bold;">小時</div>
+        </div>
     </div>
 
-    <h3>屆期換證年應上時數計算</h3>
-    
+    <div class="section-title">116年屆期換證者換證時數計算</div>
+
     <div class="form-group">
-        <label for="row9">A：「屆期換證當年」1/1~換證前的月份數</label>
-        <input type="text" id="row9" readonly placeholder="自動計算">
-        <div class="unit"></div>
+        <label for="rowA">A、『換證前的月份比例』：</label>
+        <div class="input-block">
+            <input type="text" id="rowA" readonly placeholder="自動計算">
+            <div class="unit"></div>
+        </div>
     </div>
-    
+
     <div class="form-group">
-        <label for="row10">B：屆期換證前要完成的時數</label>
-        <input type="text" id="row10" readonly placeholder="自動計算">
-        <div class="unit">小時</div>
+        <label for="rowB">B、『換證前要完成的時數』：</label>
+        <div class="input-block">
+            <input type="text" id="rowB" readonly placeholder="自動計算">
+            <div class="unit">小時</div>
+        </div>
     </div>
-    
-    <div class="form-group">
-        <label for="row11">C：可提前於換證前一年完成的時數</label>
-        <input type="text" id="row11" readonly placeholder="自動計算" style="font-weight: bold; color: #27ae60;">
-        <div class="unit">小時</div>
+
+    <div class="attention-box">
+        <p><strong>注意：</strong>若換證當年度的上課時間充裕，可於當年上完課程即可，換證當年度上課時間不足夠時，可以彈性的在前一年先完成應上時數。</p>
+    </div>
+
+    <div class="form-group" style="border-bottom: 2px solid #cbd5e1; padding-bottom: 20px;">
+        <label for="rowC" style="color: #0369a1;">C、『屆期換證前一年（115年）可完成的時數』：</label>
+        <div class="input-block">
+            <input type="text" id="rowC" readonly placeholder="自動計算" style="color: #0369a1; background-color: #f0f9ff; font-size: 16px;">
+            <div class="unit" style="color: #0369a1; font-weight: bold;">小時</div>
+        </div>
     </div>
 
     <div class="btn-container">
-        <button class="btn-clear" onclick="clearForm()">清除資料</button>
+        <button class="btn-clear" onclick="clearForm()">清除所有資料</button>
     </div>
 </div>
 
 <script>
-function calculate() {
-    // 1. 處理第五列的自行輸入數值與防呆
-    const row5Input = document.getElementById('row5');
-    let row5Value = parseFloat(row5Input.value);
-
-    if (isNaN(row5Value)) {
-        row5Value = 0;
+// 初始化下拉選單
+window.onload = function() {
+    const monthSelect = document.getElementById('docMonth');
+    for (let m = 1; m <= 12; m++) {
+        monthSelect.options.add(new Option(m, m));
     }
+    const daySelect = document.getElementById('docDay');
+    for (let d = 1; d <= 31; d++) {
+        daySelect.options.add(new Option(d, d));
+    }
+}
+
+// 核心整合計算函式
+function calculateAll() {
+    const yearVal = document.getElementById('docYear').value;
+    const monthVal = parseInt(document.getElementById('docMonth').value);
+    const dayVal = parseInt(document.getElementById('docDay').value);
+    
+    const row2Input = document.getElementById('row2');
+    const row3Input = document.getElementById('row3');
+    const row4Input = document.getElementById('row4');
+    const row5Input = document.getElementById('row5');
+    const row6Input = document.getElementById('row6');
+    
+    const rowAInput = document.getElementById('rowA');
+    const rowBInput = document.getElementById('rowB');
+    const rowCInput = document.getElementById('rowC');
+    
+    const dynamicDateSpan = document.getElementById('dynamic-date');
+
+    // 基礎防呆：若年月日未齊全，清空後續結果
+    if (!yearVal || isNaN(monthVal) || isNaN(dayVal)) {
+        row2Input.value = '';
+        row3Input.value = '';
+        row4Input.value = '';
+        row6Input.value = '';
+        rowAInput.value = '';
+        rowBInput.value = '';
+        rowCInput.value = '';
+        dynamicDateSpan.innerText = '『二』的日期';
+        return;
+    }
+
+    // 1. 二、『114年在職年度到期日』
+    const displayMonth = monthVal < 10 ? '0' + monthVal : monthVal;
+    const displayDay = dayVal < 10 ? '0' + dayVal : dayVal;
+    const dateString114 = `114年${displayMonth}月${displayDay}日`;
+    row2Input.value = dateString114;
+    dynamicDateSpan.innerText = dateString114;
+
+    // 2. 三、『114年後半段月份數』＝ 12 - 當前月份
+    const row3 = 12 - monthVal;
+    row3Input.value = row3;
+
+    // 3. 四、『114年應完成時數』＝ 項目三 * 1.5
+    const row4 = row3 * 1.5;
+    row4Input.value = row4;
+
+    // 4. 五、使用者輸入時數防呆 (上限 18 小時)
+    let row5Value = parseFloat(row5Input.value);
+    if (isNaN(row5Value)) row5Value = 0;
     if (row5Value < 0) {
         row5Value = 0;
         row5Input.value = 0;
@@ -183,53 +322,38 @@ function calculate() {
         row5Input.value = 18;
     }
 
-    // 2. 檢查是否已選擇日期，若無則不往下計算其他連動欄位
-    const dateInput = document.getElementById('expiryDate').value;
-    if (!dateInput) {
-        return;
-    }
-
-    // 3. 解析日期與各欄位核心計算
-    const selectedDate = new Date(dateInput);
-    const month = selectedDate.getMonth() + 1; // 1 ~ 12 月
-
-    // 第三列：114年後半段月份數 = 12 - 到期日月份
-    const row3 = 12 - month;
-    
-    // 第四列：114年應完成時數 = 第三列 * 1.5
-    const row4 = row3 * 1.5;
-
-    // 【新公式】第六列：115年需要完成的時數 = 18 + 第四列時數 - 第五列時數
+    // 5. 六、『115年需要完成的時數』＝ 18 + 四 - 五
     const row6 = 18 + row4 - row5Value;
+    row6Input.value = Math.round(row6 * 10) / 10;
 
-    // 第九列：換證前的月份比例 = 12 - 第三列
-    const row9 = 12 - row3;
+    // 6. A、『換證前的月份比例』＝ 12 - 第三列的數字 (row3)
+    const rowA = 12 - row3;
+    rowAInput.value = rowA;
 
-    // 第十列：換證前要完成的時數 = 第九列 * 1.5
-    const row10 = row9 * 1.5;
+    // 7. B、『換證前要完成的時數』＝ 項目A * 1.5
+    const rowB = rowA * 1.5;
+    rowBInput.value = rowB;
 
-    // 第十一列：換證前一年可完成的時數 = 18 + 第十列
-    const row11 = 18 + row10;
-
-    // 4. 將計算結果渲染至網頁畫面上
-    document.getElementById('row3').value = row3;
-    document.getElementById('row4').value = row4;
-    document.getElementById('row6').value = row6;
-    document.getElementById('row9').value = row9;
-    document.getElementById('row10').value = row10;
-    document.getElementById('row11').value = row11;
+    // 8. C、『屆期換證前一年（115年）可完成的時數』＝ 六 + 項目B
+    const rowC = row6 + rowB;
+    rowCInput.value = Math.round(rowC * 10) / 10;
 }
 
+// 表單清空
 function clearForm() {
     document.getElementById('name').value = '';
-    document.getElementById('expiryDate').value = '';
+    document.getElementById('docYear').value = '';
+    document.getElementById('docMonth').value = '';
+    document.getElementById('docDay').value = '';
+    document.getElementById('row2').value = '';
     document.getElementById('row3').value = '';
     document.getElementById('row4').value = '';
     document.getElementById('row5').value = '';
     document.getElementById('row6').value = '';
-    document.getElementById('row9').value = '';
-    document.getElementById('row10').value = '';
-    document.getElementById('row11').value = '';
+    document.getElementById('rowA').value = '';
+    document.getElementById('rowB').value = '';
+    document.getElementById('rowC').value = '';
+    document.getElementById('dynamic-date').innerText = '『二』的日期';
 }
 </script>
 
